@@ -1,21 +1,17 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
 public class Main {
-
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-
         ArrayList<Funcionario> funcionarios = new ArrayList<>();
-
         int opcao;
 
         do {
 
-            System.out.println("      Sistema de Funciorários ");
+            System.out.println("\n========== SISTEMA DE FUNCIONÁRIOS ==========");
             System.out.println("1 - Cadastrar Funcionário Padrão");
             System.out.println("2 - Cadastrar Funcionário Comissionado");
             System.out.println("3 - Cadastrar Funcionário Produção");
@@ -23,95 +19,24 @@ public class Main {
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
 
-            opcao = sc.nextInt();
+            opcao = lerInteiro(sc, "Digite um número: ");
 
             switch (opcao) {
 
                 case 1:
-                    System.out.println("Cadastrar Funcionário Padrão");
-                    sc.nextLine();
-
-                    System.out.print("Nome: ");
-                    String nome = sc.nextLine();
-
-                    System.out.print("Matrícula: ");
-                    int matricula = sc.nextInt();
-
-
-
-                    FuncionarioPadrao f = new FuncionarioPadrao(matricula, nome);
-
-                    funcionarios.add(f);
-
-                    System.out.println("Funcionário cadastrado!");
-
+                    cadastrarFuncionarioPadrao(sc, funcionarios);
                     break;
 
                 case 2:
-                    System.out.println("Cadastrar Funcionário Comissionado");
-                    sc.nextLine();
-
-                    System.out.print("Nome: ");
-                    String nome2 = sc.nextLine();
-
-                    System.out.print("Matrícula: ");
-                    int matricula2 = sc.nextInt();
-
-                    System.out.print("Valor das vendas: ");
-                    double vendas = sc.nextDouble();
-
-                    System.out.print("Percentual de comissão: ");
-                    double percentual = sc.nextDouble();
-
-                    FuncionarioComissionado f2 =
-                            new FuncionarioComissionado(matricula2, nome2, vendas, percentual);
-
-                    funcionarios.add(f2);
-
-                    System.out.println("Funcionário cadastrado!");
-
+                    cadastrarFuncionarioComissionado(sc, funcionarios);
                     break;
 
                 case 3:
-                    System.out.println("Cadastrar Funcionário Produção");
-                    sc.nextLine();
+                    cadastrarFuncionarioProducao(sc, funcionarios);
+                    break;
 
-                    System.out.print("Nome: ");
-                    String nome3 = sc.nextLine();
-
-                    System.out.print("Matrícula: ");
-                    int matricula3 = sc.nextInt();
-
-                    System.out.print("Quantidade de peças: ");
-                    int quantidade = sc.nextInt();
-
-                    System.out.print("Valor por peça: ");
-                    double valor = sc.nextDouble();
-
-                    FuncionarioProducao f3 =
-                            new FuncionarioProducao(matricula3, nome3, quantidade, valor);
-
-                    funcionarios.add(f3);
-
-                    System.out.println("Funcionário cadastrado!");
                 case 4:
-                    System.out.println("Gerar folha de pagamento");
-                    System.out.println("Total de pessoas cadastradas: " + funcionarios.size());
-
-                    for (Funcionario funcio : funcionarios) {
-
-                        System.out.println("Nome: " + funcio.nome);
-                        System.out.println("Matrícula: " + funcio.matricula);
-                        System.out.println("Salário Fixo: " + Funcionario.SALARIO_BASE);
-
-                        double salarioFinal = funcio.calcularSalario();
-                        double extra = salarioFinal - Funcionario.SALARIO_BASE;
-
-                        System.out.println("Extras: " + extra);
-                        System.out.println("Salário Final: " + salarioFinal);
-
-                    }
-
+                    gerarFolhaPagamento(funcionarios);
                     break;
 
                 case 0:
@@ -119,7 +44,7 @@ public class Main {
                     break;
 
                 default:
-                    System.out.println("Opção inválida, escolha de 0 a 4");
+                    System.out.println("Opção inválida! Escolha um número entre 0 e 4.");
 
             }
 
@@ -127,6 +52,152 @@ public class Main {
 
         sc.close();
 
+    }
+
+    private static int lerInteiro(Scanner sc, String mensagemErro) {
+        while (!sc.hasNextInt()) {
+            System.out.print("Entrada inválida! " + mensagemErro);
+            sc.next();
+        }
+        int valor = sc.nextInt();
+        sc.nextLine();
+        return valor;
+    }
+
+    private static int lerInteiroPositivo(Scanner sc, String mensagemErro) {
+        int valor;
+        do {
+            while (!sc.hasNextInt()) {
+                System.out.print("Entrada inválida! " + mensagemErro);
+                sc.next();
+            }
+            valor = sc.nextInt();
+            sc.nextLine();
+            if (valor < 0) {
+                System.out.print("O valor não pode ser negativo. " + mensagemErro);
+            }
+        } while (valor < 0);
+        return valor;
+    }
+
+    private static double lerDoublePositivo(Scanner sc, String mensagemErro) {
+        double valor;
+        do {
+            while (!sc.hasNextDouble()) {
+                System.out.print("Entrada inválida! " + mensagemErro);
+                sc.next();
+            }
+            valor = sc.nextDouble();
+            sc.nextLine();
+            if (valor < 0) {
+                System.out.print("O valor não pode ser negativo. " + mensagemErro);
+            }
+        } while (valor < 0);
+        return valor;
+    }
+
+    private static double lerPercentual(Scanner sc, String mensagemErro) {
+        double valor;
+        do {
+            while (!sc.hasNextDouble()) {
+                System.out.print("Entrada inválida! " + mensagemErro);
+                sc.next();
+            }
+            valor = sc.nextDouble();
+            sc.nextLine();
+            if (valor < 0 || valor > 100) {
+                System.out.print("O percentual deve estar entre 0 e 100. " + mensagemErro);
+            }
+        } while (valor < 0 || valor > 100);
+        return valor;
+    }
+
+    private static String lerTexto(Scanner sc) {
+        String texto;
+        do {
+            texto = sc.nextLine().trim();
+            if (texto.isEmpty()) {
+                System.out.print("O nome não pode estar vazio. Digite novamente: ");
+            }
+        } while (texto.isEmpty());
+        return texto;
+    }
+
+    private static void cadastrarFuncionarioPadrao(Scanner sc, ArrayList<Funcionario> funcionarios) {
+        System.out.println("\n--- Cadastrar Funcionário Padrão ---");
+
+        System.out.print("Nome: ");
+        String nome = lerTexto(sc);
+
+        System.out.print("Matrícula: ");
+        int matricula = lerInteiroPositivo(sc, "Digite uma matrícula válida: ");
+
+        funcionarios.add(new FuncionarioPadrao(matricula, nome));
+        System.out.println("Funcionário cadastrado com sucesso!");
+    }
+
+    private static void cadastrarFuncionarioComissionado(Scanner sc, ArrayList<Funcionario> funcionarios) {
+        System.out.println("\n--- Cadastrar Funcionário Comissionado ---");
+
+        System.out.print("Nome: ");
+        String nome = lerTexto(sc);
+
+        System.out.print("Matrícula: ");
+        int matricula = lerInteiroPositivo(sc, "Digite uma matrícula válida: ");
+
+        System.out.print("Valor total de vendas: R$ ");
+        double vendas = lerDoublePositivo(sc, "Digite um valor válido para vendas: ");
+
+        System.out.print("Percentual de comissão: ");
+        double percentual = lerPercentual(sc, "Digite um percentual válido: ");
+
+        funcionarios.add(new FuncionarioComissionado(matricula, nome, vendas, percentual));
+        System.out.println("Funcionário cadastrado com sucesso!");
+    }
+
+    private static void cadastrarFuncionarioProducao(Scanner sc, ArrayList<Funcionario> funcionarios) {
+        System.out.println("\n--- Cadastrar Funcionário Produção ---");
+
+        System.out.print("Nome: ");
+        String nome = lerTexto(sc);
+
+        System.out.print("Matrícula: ");
+        int matricula = lerInteiroPositivo(sc, "Digite uma matrícula válida: ");
+
+        System.out.print("Quantidade de peças produzidas: ");
+        int quantidade = lerInteiroPositivo(sc, "Digite uma quantidade válida: ");
+
+        System.out.print("Valor por peça: R$ ");
+        double valorPeca = lerDoublePositivo(sc, "Digite um valor válido por peça: ");
+
+        funcionarios.add(new FuncionarioProducao(matricula, nome, quantidade, valorPeca));
+        System.out.println("Funcionário cadastrado com sucesso!");
+    }
+
+    private static void gerarFolhaPagamento(ArrayList<Funcionario> funcionarios) {
+        System.out.println("\n========== FOLHA DE PAGAMENTO ==========");
+
+        if (funcionarios.isEmpty()) {
+            System.out.println("Nenhum funcionário cadastrado.");
+            return;
+        }
+
+        System.out.println("Total de funcionários cadastrados: " + funcionarios.size());
+        System.out.println("------------------------------------------");
+
+        for (Funcionario funcionario : funcionarios) {
+
+            double salarioFinal = funcionario.calcularSalario();
+            double extras = salarioFinal - Funcionario.SALARIO_BASE;
+
+            System.out.println("Funcionário: " + funcionario.getNome());
+            System.out.println("Matrícula: " + funcionario.getMatricula());
+            System.out.printf("Salário Base: R$ %.2f%n", Funcionario.SALARIO_BASE);
+            System.out.printf("Extras: R$ %.2f%n", extras);
+            System.out.printf("Salário Final: R$ %.2f%n", salarioFinal);
+            System.out.println("------------------------------------------");
+
+        }
     }
 
 }

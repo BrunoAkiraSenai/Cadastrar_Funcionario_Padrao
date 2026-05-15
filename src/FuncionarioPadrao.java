@@ -4,4 +4,9 @@ public class FuncionarioPadrao extends Funcionario {
         super(matricula, nome);
     }
 
+    @Override
+    public double calcularSalario() {
+        return SALARIO_BASE;
+    }
+
 }
